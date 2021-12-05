@@ -8,11 +8,12 @@ import {
 } from '@nestjs/common';
 import { VideoService } from './video.service';
 import { Video } from './interface/video.interface';
+import { Trailer } from './interface/trailer.interface';
 import { ListDto } from './dto/dto';
-import { Observable, map } from 'rxjs';
-import { createReadStream, createWriteStream } from 'fs';
-import { join } from 'path';
-import { response } from 'express';
+import { Observable, map, filter, first, from, take, concatAll } from 'rxjs';
+import * as Youtube from 'youtube-stream-url';
+// import { createReadStream, createWriteStream } from 'fs';
+// import { join } from 'path';
 
 @Controller('video')
 export class VideoController {
@@ -20,7 +21,7 @@ export class VideoController {
 
   @Get()
   findAll(@Query() query: ListDto): Observable<Video[]> {
-    const { page } = query;
+    const { page = '1' } = query;
     const data = this.videoService.findPopular(page);
     return data;
   }
@@ -36,5 +37,17 @@ export class VideoController {
     return this.videoService
       .getImage(id)
       .pipe(map((stream) => new StreamableFile(stream)));
+  }
+
+  @Get('trailer/:id')
+  getTrailer(@Param('id') id: string) {
+    // request videos
+    return this.videoService.getTmdbVideos(id).pipe(
+      // 提取video
+      concatAll(),
+      // 筛选youtube预告片
+      filter((video) => video.site === 'YouTube'),
+      first(),
+    );
   }
 }
