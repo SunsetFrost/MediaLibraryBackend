@@ -9,9 +9,20 @@ import {
 import { VideoService } from './video.service';
 import { Video } from './interface/video.interface';
 import { Trailer } from './interface/trailer.interface';
-import { ListDto } from './dto/dto';
-import { Observable, map, filter, first, from, take, concatAll } from 'rxjs';
+import { ListDto, SearchDto } from './dto/dto';
+import {
+  Observable,
+  map,
+  filter,
+  first,
+  from,
+  take,
+  concatAll,
+  catchError,
+  throwError,
+} from 'rxjs';
 import * as Youtube from 'youtube-stream-url';
+import { query } from 'express';
 // import { createReadStream, createWriteStream } from 'fs';
 // import { join } from 'path';
 
@@ -49,5 +60,12 @@ export class VideoController {
       filter((video) => video.site === 'YouTube'),
       first(),
     );
+  }
+
+  @Get('search/movie')
+  searchMovie(@Query() params: SearchDto): Observable<any> {
+    const { query, page = 1 } = params;
+    const data = this.videoService.searchMovies(query, page);
+    return data;
   }
 }

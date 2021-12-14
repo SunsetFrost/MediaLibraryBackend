@@ -3,3 +3,6 @@ GET http://127.0.0.1:3000/video/image/q719jXXEzOoYaps6babgKnONONX
 
 ### 
 GET http://127.0.0.1:3000/video
+
+### 
+GET http://127.0.0.1:3000/video/search/movie?query=harry
