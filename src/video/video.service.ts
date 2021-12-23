@@ -31,7 +31,6 @@ export class VideoService {
     return this.httpService.get(url, this._httpConfig).pipe(
       map((res) => res.data),
       catchError((e) => {
-        console.log('/n/r/n fuck error');
         throw new HttpException(e.response.data, e.response.status);
       }),
     );
