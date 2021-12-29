@@ -24,7 +24,7 @@ export class BookService {
   _ny_key: string;
   _google_key: string;
 
-  getBestSellers(page: string): Observable<any> {
+  getBestSellers(page: number): Observable<any> {
     const url = `https://api.nytimes.com/svc/books/v3/lists/best-sellers/history.json?api-key=${this._ny_key}&offset=${page}`;
     return this.httpService.get(url, this._httpConfig).pipe(
       map((res) => res.data.results),
@@ -40,7 +40,6 @@ export class BookService {
     maxResults: number,
   ): Observable<any> {
     const url = `https://www.googleapis.com/books/v1/volumes?q=${query}&key=${this._google_key}&startIndex=${startIndex}&maxResults=${maxResults}`;
-    console.log('url', url);
     return this.httpService.get(url, this._httpConfig).pipe(
       map((res) => res.data),
       catchError((e) => {
@@ -51,6 +50,7 @@ export class BookService {
 
   findOne(id: string) {
     const url = `https://www.googleapis.com/books/v1/volumes/${id}?key=${this._google_key}`;
+    console.log('url', url);
     return this.httpService.get(url, this._httpConfig).pipe(
       map((res) => res.data),
       catchError((e) => {
