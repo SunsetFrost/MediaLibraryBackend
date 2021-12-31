@@ -1,5 +1,9 @@
 import { Controller, Get, Param, Query } from '@nestjs/common';
+import { response } from 'express';
 import {
+  filter,
+  forkJoin,
+  map,
   // concatAll,
   // concatMap,
   // filter,
@@ -10,6 +14,8 @@ import {
   // mergeAll,
   // mergeMap,
   Observable,
+  switchMap,
+  tap,
   // reduce,
   // startWith,
 } from 'rxjs';
@@ -22,43 +28,21 @@ export class BookController {
   @Get('best-sellers')
   getBestSellers(@Query('page') page: number) {
     const apiPage = (page - 1) * 20;
-    const data = this.bookService.getBestSellers(apiPage);
+    const data = this.bookService.getBestSellers(apiPage).pipe(
+      switchMap((response) =>
+        forkJoin(
+          response.map((data) => {
+            const { isbns } = data;
+            const { isbn13: isbn } = isbns[0] ?? {};
+            return this.bookService
+              .findOneByISBN(isbn)
+              .pipe(map((i) => i?.items?.[0]));
+          }),
+        ),
+      ),
+      tap(console.log),
+    );
 
-    // const data = this.bookService.getBestSellers(apiPage).pipe(
-    //   // high order to first order
-    //   concatAll(),
-    //   // map ny api's book isbn to google api object
-    //   map((data) => {
-    //     const { isbns } = data;
-    //     const { isbn13: isbn } = isbns[0] ?? {};
-    //     return isbn;
-    //   }),
-    //   // reduce((acc, value) => [...acc, ...value], []),
-    // );
-
-    // TODO 每个再通过google api请求太慢了，暂时只使用new york book的
-    // const googleData = data.pipe(
-    //   map((isbn) => {
-    //     console.log('isbn', isbn);
-    //     const maxResults = 20,
-    //       startIndex = apiPage;
-    //     // if (!isbn) {
-    //     //   return {};
-    //     // }
-    //     const res = this.bookService
-    //       .findAll(`isbn:${isbn}`, startIndex, maxResults)
-    //       .pipe(
-    //         map((res) => {
-    //           console.log('page', startIndex, maxResults);
-    //           console.log('res data', res);
-    //           return res;
-    //         }),
-    //         // concatAll(),
-    //       );
-    //     return res;
-    //   }),
-    //   concatAll(),
-    // );
     return data;
   }
 

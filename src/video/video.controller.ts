@@ -17,8 +17,8 @@ export class VideoController {
 
   @Get()
   findAll(@Query() query: ListDto): Observable<Video[]> {
-    const { page = '1' } = query;
-    const data = this.videoService.findPopular(page);
+    const { sort_by = 'popularity.desc', page = '1', type = 'All' } = query;
+    const data = this.videoService.findAll(sort_by, type, page);
     return data;
   }
 

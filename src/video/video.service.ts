@@ -25,8 +25,14 @@ export class VideoService {
   _httpConfig: AxiosRequestConfig<any>;
   _key: string;
 
-  findPopular(page: string): Observable<Video[]> {
-    const url = `https://api.themoviedb.org/3/movie/popular?page=${page}&api_key=${this._key}&language=zh-CN`;
+  findAll(sort_by: string, type: string, page: string): Observable<Video[]> {
+    let url = `https://api.themoviedb.org/3/discover/movie?page=${page}&sort_by=${sort_by}&api_key=${this._key}`;
+
+    if (type === 'R') {
+      url += '&certification_country=US&certification=R&include_adult=true';
+    } else if (type === 'NC-17') {
+      url += '&certification_country=US&certification=NC-17&include_adult=true';
+    }
 
     return this.httpService.get(url, this._httpConfig).pipe(
       map((res) => res.data),

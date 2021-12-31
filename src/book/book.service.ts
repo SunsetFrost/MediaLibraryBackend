@@ -50,7 +50,16 @@ export class BookService {
 
   findOne(id: string) {
     const url = `https://www.googleapis.com/books/v1/volumes/${id}?key=${this._google_key}`;
-    console.log('url', url);
+    return this.httpService.get(url, this._httpConfig).pipe(
+      map((res) => res.data),
+      catchError((e) => {
+        throw new HttpException(e.response.data, e.response.status);
+      }),
+    );
+  }
+
+  findOneByISBN(isbn: string) {
+    const url = `https://www.googleapis.com/books/v1/volumes?q=isbn:${isbn}`;
     return this.httpService.get(url, this._httpConfig).pipe(
       map((res) => res.data),
       catchError((e) => {
