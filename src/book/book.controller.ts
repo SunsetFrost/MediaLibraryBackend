@@ -1,7 +1,14 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
-import { response } from 'express';
 import {
-  filter,
+  Controller,
+  Get,
+  Param,
+  Query,
+  Header,
+  StreamableFile,
+  HttpException,
+  HttpStatus,
+} from '@nestjs/common';
+import {
   forkJoin,
   map,
   // concatAll,
@@ -15,7 +22,6 @@ import {
   // mergeMap,
   Observable,
   switchMap,
-  tap,
   // reduce,
   // startWith,
 } from 'rxjs';
@@ -29,18 +35,26 @@ export class BookController {
   getBestSellers(@Query('page') page: number) {
     const apiPage = (page - 1) * 20;
     const data = this.bookService.getBestSellers(apiPage).pipe(
-      switchMap((response) =>
-        forkJoin(
+      switchMap((response) => {
+        if (!response) {
+          throw new HttpException(
+            'Book NewYork Times API return null',
+            HttpStatus.FORBIDDEN,
+          );
+        }
+        return forkJoin(
           response.map((data) => {
             const { isbns } = data;
             const { isbn13: isbn } = isbns[0] ?? {};
-            return this.bookService
-              .findOneByISBN(isbn)
-              .pipe(map((i) => i?.items?.[0]));
+            return this.bookService.findOneByISBN(isbn).pipe(
+              map((i) => {
+                return i?.items?.[0];
+              }),
+            );
           }),
-        ),
-      ),
-      tap(console.log),
+          (...values) => values.filter((i) => i),
+        );
+      }),
     );
 
     return data;
@@ -63,5 +77,13 @@ export class BookController {
   getDetail(@Param('id') id: string): Observable<any> {
     const data = this.bookService.findOne(id);
     return data;
+  }
+
+  @Get('image/:id')
+  @Header('Content-Type', 'image/jpeg')
+  getImage(@Param('id') id: string) {
+    return this.bookService
+      .getImage(id)
+      .pipe(map((stream) => new StreamableFile(stream)));
   }
 }

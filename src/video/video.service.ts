@@ -26,7 +26,7 @@ export class VideoService {
   _key: string;
 
   findAll(sort_by: string, type: string, page: string): Observable<Video[]> {
-    let url = `https://api.themoviedb.org/3/discover/movie?page=${page}&sort_by=${sort_by}&api_key=${this._key}`;
+    let url = `https://api.themoviedb.org/3/discover/movie?page=${page}&sort_by=${sort_by}&api_key=${this._key}&language=zh-CN`;
 
     if (type === 'R') {
       url += '&certification_country=US&certification=R&include_adult=true';
@@ -43,7 +43,7 @@ export class VideoService {
   }
 
   findOne(id: string): Observable<Video> {
-    const url = `https://api.themoviedb.org/3/movie/${id}?api_key=${this._key}&language=zh-CN`;
+    const url = `https://api.themoviedb.org/3/movie/${id}?api_key=${this._key}&language=zh-CN&append_to_response=watch/providers`;
 
     return this.httpService.get(url, this._httpConfig).pipe(
       map((res) => res.data),
@@ -75,7 +75,7 @@ export class VideoService {
     );
   }
 
-  searchMovies(query: string, page: number): Observable<Trailer[]> {
+  searchMovies(query: string, page: number): Observable<any[]> {
     const url = `https://api.themoviedb.org/3/search/movie?api_key=${this._key}&query=${query}&page=${page}`;
     return this.httpService.get(url, this._httpConfig).pipe(
       map((res) => res.data.results),

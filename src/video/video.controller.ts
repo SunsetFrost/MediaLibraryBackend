@@ -54,6 +54,7 @@ export class VideoController {
 
   @Get('search/movie')
   searchMovie(@Query() params: SearchDto): Observable<any> {
+    console.log('invoke');
     const { query, page = 1 } = params;
     const data = this.videoService.searchMovies(query, page);
     return data;
