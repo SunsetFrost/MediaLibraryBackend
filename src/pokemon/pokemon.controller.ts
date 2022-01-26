@@ -34,36 +34,39 @@ export class PokemonController {
         );
       }),
       /// refactor result
-      map((pokemons: any[]) => {
-        const refactoredPokemons = pokemons.map((pokemon) => {
-          const { types, stats } = pokemon;
-          const newTypes = types.map((type) => {
-            return {
-              name: type.type.name,
-              url: type.type.url,
-            };
-          });
-          const newStats = stats.map((stat) => {
-            return {
-              ...stat,
-              name: stat.stat.name,
-            };
-          });
-          return {
-            ...pokemon,
-            types: newTypes,
-            stats: newStats,
-          };
-        });
-        return refactoredPokemons;
-      }),
+      map((pokemons: any[]) =>
+        pokemons.map((pokemon) => this._toSimplePokemon(pokemon)),
+      ),
     );
     return data;
   }
 
   @Get(':id')
   getDetail(@Param('id') id: number): Observable<any> {
-    const data = this.pokemonService.findOne(id);
+    const data = this.pokemonService
+      .findOne(id)
+      .pipe(map((pokemon) => this._toSimplePokemon(pokemon)));
     return data;
+  }
+
+  _toSimplePokemon(pokemon: any): any {
+    const { types, stats } = pokemon;
+    const newTypes = types.map((type) => {
+      return {
+        name: type.type.name,
+        url: type.type.url,
+      };
+    });
+    const newStats = stats.map((stat) => {
+      return {
+        ...stat,
+        name: stat.stat.name,
+      };
+    });
+    return {
+      ...pokemon,
+      types: newTypes,
+      stats: newStats,
+    };
   }
 }

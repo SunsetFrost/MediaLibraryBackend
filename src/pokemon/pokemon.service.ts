@@ -1,15 +1,11 @@
 import { Injectable, HttpException } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { HttpService } from '@nestjs/axios';
 import { AxiosRequestConfig } from 'axios';
 import { Observable, map, catchError } from 'rxjs';
 
 @Injectable()
 export class PokemonService {
-  constructor(
-    private configService: ConfigService,
-    private httpService: HttpService,
-  ) {
+  constructor(private httpService: HttpService) {
     this._httpConfig = {
       proxy: {
         host: '127.0.0.1',
