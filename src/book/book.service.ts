@@ -29,7 +29,7 @@ export class BookService {
     const url = `https://api.nytimes.com/svc/books/v3/lists/best-sellers/history.json?api-key=${this._ny_key}&offset=${page}`;
     return this.httpService.get(url, this._httpConfig).pipe(
       map((res) => {
-        if (res.data.status === 'OK') {
+        if (res.status == 200) {
           return res.data.results;
         } else {
           throw new HttpException(
@@ -44,6 +44,7 @@ export class BookService {
     );
   }
 
+  /// TODO: Incoming message bug
   findAll(
     query: string,
     startIndex: number,
@@ -51,7 +52,14 @@ export class BookService {
   ): Observable<any> {
     const url = `https://www.googleapis.com/books/v1/volumes?q=${query}&key=${this._google_key}&startIndex=${startIndex}&maxResults=${maxResults}`;
     return this.httpService.get(url, this._httpConfig).pipe(
-      map((res) => res.data),
+      tap((res) => console.log(res)),
+      map((res) => {
+        if (!Array.isArray(res.data.items) || res.data.items.lenght <= 0) {
+          throw new HttpException('search result empty', 200);
+        }
+        return res.data;
+      }),
+      tap((data) => console.log(data)),
       catchError((e) => {
         throw new HttpException(e.response.data, e.response.status);
       }),

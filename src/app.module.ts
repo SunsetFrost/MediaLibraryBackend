@@ -9,7 +9,14 @@ import { PokemonModule } from './pokemon/pokemon.module';
 import { AnimeModule } from './anime/anime.module';
 
 @Module({
-  imports: [ConfigModule.forRoot(), VideoModule, MusicModule, BookModule, PokemonModule, AnimeModule],
+  imports: [
+    ConfigModule.forRoot(),
+    VideoModule,
+    MusicModule,
+    BookModule,
+    PokemonModule,
+    AnimeModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })

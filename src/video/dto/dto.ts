@@ -6,5 +6,5 @@ export class ListDto {
 
 export class SearchDto {
   page: number;
-  query: string;
+  text: string;
 }

@@ -8,12 +8,13 @@ export class MusicController {
 
   @Get('new-releases')
   getNewReleases(@Query('page') page: number): Observable<any> {
+    const offset = (page - 1) * 20;
     const data = this.musicService.getAuth().pipe(
       map((res) => res.data),
       // use auth to request api info
       map((data) => {
         const auth = `${data.token_type} ${data.access_token}`;
-        return this.musicService.getNewReleases(page, auth);
+        return this.musicService.getNewReleases(offset, auth);
       }),
       concatAll(),
       // api res to data
@@ -31,12 +32,13 @@ export class MusicController {
     @Query('page') page: number,
     @Query('query') query: string,
   ): Observable<any> {
+    const offset = (page - 1) * 20;
     const data = this.musicService.getAuth().pipe(
       map((res) => res.data),
       // use auth to request api info
       map((data) => {
         const auth = `${data.token_type} ${data.access_token}`;
-        return this.musicService.searchAlbum(query, page, auth);
+        return this.musicService.searchAlbum(query, offset, auth);
       }),
       concatAll(),
       // api res to data

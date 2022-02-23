@@ -1,4 +1,11 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Header,
+  Param,
+  Query,
+  StreamableFile,
+} from '@nestjs/common';
 import {
   Observable,
   forkJoin,
@@ -24,9 +31,7 @@ export class PokemonController {
       switchMap((response) => {
         return forkJoin(
           response.map((i) => {
-            // console.log(i);
             const url = i.url;
-            // get id param by regex
             const regex = /https\:\/\/pokeapi\.co\/api\/v2\/pokemon\/(\w+)/;
             const id = regex.exec(url)[1];
             return this.pokemonService.findOne(Number.parseInt(id));
@@ -68,5 +73,13 @@ export class PokemonController {
       types: newTypes,
       stats: newStats,
     };
+  }
+
+  @Get('image/:id')
+  @Header('Content-Type', 'image/jpeg')
+  getImage(@Param('id') id: string) {
+    return this.pokemonService
+      .getImage(id)
+      .pipe(map((stream) => new StreamableFile(stream)));
   }
 }

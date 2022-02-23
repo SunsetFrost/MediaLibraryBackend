@@ -68,7 +68,7 @@ export class VideoService {
   getTmdbVideos(id: string): Observable<Trailer[]> {
     const url = `https://api.themoviedb.org/3/movie/${id}/videos?api_key=${this._key}`;
     return this.httpService.get(url, this._httpConfig).pipe(
-      map((res) => res.data.results),
+      map((res) => res.data),
       catchError((e) => {
         throw new HttpException(e.response.data, e.response.status);
       }),
@@ -78,7 +78,7 @@ export class VideoService {
   searchMovies(query: string, page: number): Observable<any[]> {
     const url = `https://api.themoviedb.org/3/search/movie?api_key=${this._key}&query=${query}&page=${page}`;
     return this.httpService.get(url, this._httpConfig).pipe(
-      map((res) => res.data.results),
+      map((res) => res.data),
       catchError((e) => {
         throw new HttpException(e.response.data, e.response.status);
       }),
