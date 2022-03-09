@@ -9,7 +9,16 @@ import {
 import { VideoService } from './video.service';
 import { Video } from './interface/video.interface';
 import { ListDto, SearchDto } from './dto/dto';
-import { Observable, map, filter, first, concatAll } from 'rxjs';
+import {
+  Observable,
+  map,
+  filter,
+  concatAll,
+  tap,
+  forkJoin,
+  mergeAll,
+  from,
+} from 'rxjs';
 
 @Controller('video')
 export class VideoController {
@@ -37,8 +46,8 @@ export class VideoController {
 
   @Get('trailer/:id')
   getTrailer(@Param('id') id: string) {
-    // request videos
-    return this.videoService.getTmdbVideos(id).pipe(
+    // const data = this.videoService.getTmdbVideos(id);
+    const data = this.videoService.getTmdbVideos(id).pipe(
       // 提取video
       concatAll(),
       // 筛选youtube预告片
@@ -48,8 +57,9 @@ export class VideoController {
           video.official === true &&
           video.type === 'Trailer',
       ),
-      first(),
     );
+
+    return forkJoin(data);
   }
   @Get('search/movie')
   searchMovie(@Query() query: SearchDto): Observable<any> {

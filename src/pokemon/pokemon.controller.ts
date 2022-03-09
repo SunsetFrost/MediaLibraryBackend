@@ -6,14 +6,7 @@ import {
   Query,
   StreamableFile,
 } from '@nestjs/common';
-import {
-  Observable,
-  forkJoin,
-  concatMap,
-  switchMap,
-  mergeMap,
-  map,
-} from 'rxjs';
+import { Observable, forkJoin, switchMap, map } from 'rxjs';
 import { PokemonService } from './pokemon.service';
 
 @Controller('pokemon')

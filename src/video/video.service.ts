@@ -68,7 +68,7 @@ export class VideoService {
   getTmdbVideos(id: string): Observable<Trailer[]> {
     const url = `https://api.themoviedb.org/3/movie/${id}/videos?api_key=${this._key}`;
     return this.httpService.get(url, this._httpConfig).pipe(
-      map((res) => res.data),
+      map((res) => res.data['results']),
       catchError((e) => {
         throw new HttpException(e.response.data, e.response.status);
       }),

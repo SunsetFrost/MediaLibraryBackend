@@ -44,7 +44,6 @@ export class BookService {
     );
   }
 
-  /// TODO: Incoming message bug
   findAll(
     query: string,
     startIndex: number,
@@ -52,14 +51,12 @@ export class BookService {
   ): Observable<any> {
     const url = `https://www.googleapis.com/books/v1/volumes?q=${query}&key=${this._google_key}&startIndex=${startIndex}&maxResults=${maxResults}`;
     return this.httpService.get(url, this._httpConfig).pipe(
-      tap((res) => console.log(res)),
       map((res) => {
         if (!Array.isArray(res.data.items) || res.data.items.lenght <= 0) {
           throw new HttpException('search result empty', 200);
         }
-        return res.data;
+        return res.data.items;
       }),
-      tap((data) => console.log(data)),
       catchError((e) => {
         throw new HttpException(e.response.data, e.response.status);
       }),
