@@ -14,10 +14,10 @@ export class VideoService {
     private httpService: HttpService,
   ) {
     this._httpConfig = {
-      proxy: {
-        host: '127.0.0.1',
-        port: 7890,
-      },
+      // proxy: {
+      //   host: '127.0.0.1',
+      //   port: 7890,
+      // },
     };
     this._key = this.configService.get<string>('TMDB_API_KEY');
   }

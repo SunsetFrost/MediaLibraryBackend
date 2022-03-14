@@ -8,10 +8,10 @@ import { Readable } from 'stream';
 export class PokemonService {
   constructor(private httpService: HttpService) {
     this._httpConfig = {
-      proxy: {
-        host: '127.0.0.1',
-        port: 7890,
-      },
+      // proxy: {
+      //   host: '127.0.0.1',
+      //   port: 7890,
+      // },
     };
   }
 
@@ -21,12 +21,6 @@ export class PokemonService {
     const url = `https://pokeapi.co/api/v2/pokemon?offset=${offset}`;
     return this.httpService.get(url, this._httpConfig).pipe(
       map((res) => {
-        console.log(
-          'pokemon service find all',
-          res.status,
-          res.statusText,
-          res.data,
-        );
         return res.data.results;
       }),
       catchError((e) => {

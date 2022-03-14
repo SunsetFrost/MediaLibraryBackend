@@ -12,10 +12,10 @@ export class BookService {
     private httpService: HttpService,
   ) {
     this._httpConfig = {
-      proxy: {
-        host: '127.0.0.1',
-        port: 7890,
-      },
+      // proxy: {
+      //   host: '127.0.0.1',
+      //   port: 7890,
+      // },
     };
     this._ny_key = this.configService.get<string>('NYTIMES_API_KEY');
     this._google_key = this.configService.get<string>('GOOGLE_BOOK_API_KEY');

@@ -8,10 +8,10 @@ import * as qs from 'qs';
 export class AnimeService {
   constructor(private httpService: HttpService) {
     this._httpConfig = {
-      proxy: {
-        host: '127.0.0.1',
-        port: 7890,
-      },
+      // proxy: {
+      //   host: '127.0.0.1',
+      //   port: 7890,
+      // },
     };
   }
 

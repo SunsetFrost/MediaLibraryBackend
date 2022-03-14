@@ -12,10 +12,10 @@ export class MusicService {
     private httpService: HttpService,
   ) {
     this._httpConfig = {
-      proxy: {
-        host: '127.0.0.1',
-        port: 7890,
-      },
+      // proxy: {
+      //   host: '127.0.0.1',
+      //   port: 7890,
+      // },
     };
     this._clientID = this.configService.get<string>('SPOTIFY_CLIENTID');
     this._clientSecret = this.configService.get<string>('SPOTIFY_CLIENTSECRET');
